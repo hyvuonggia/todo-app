@@ -28,7 +28,9 @@ public class TodoService {
     public Todo createTodo(Todo todo) {
         User user = getCurrentUser();
         todo.setUser(user);
-        return todoRepository.save(todo);
+        Todo savedTodo = todoRepository.save(todo);
+        System.out.println("Saved Todo: " + savedTodo); // Add this line
+        return savedTodo;
     }
 
     public Todo updateTodo(Long id, Todo todoDetails) {
@@ -62,7 +64,7 @@ public class TodoService {
         } else {
             username = principal.toString();
         }
-        return userRepository.findByEmail(username)
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

@@ -22,6 +22,7 @@ public class TodoController {
 
     @PostMapping
     public Todo createTodo(@RequestBody Todo todo) {
+        System.out.println("Received request to create todo: " + todo.getTitle()); // Add this line
         return todoService.createTodo(todo);
     }
 
