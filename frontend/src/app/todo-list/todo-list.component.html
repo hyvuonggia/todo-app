@@ -1,0 +1,18 @@
+<mat-card>
+  <mat-card-title>Todo List</mat-card-title>
+  <mat-card-content>
+    <div class="add-todo-section">
+      <mat-form-field appearance="fill">
+        <mat-label>New Todo</mat-label>
+        <input matInput [(ngModel)]="newTodoTitle" (keyup.enter)="addTodo()" placeholder="What needs to be done?">
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="addTodo()">
+        <mat-icon>add</mat-icon> Add Todo
+      </button>
+    </div>
+
+    <mat-list>
+      <app-todo-item *ngFor="let todo of todos" [todo]="todo" (update)="updateTodo($event)" (delete)="deleteTodo($event)"></app-todo-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
