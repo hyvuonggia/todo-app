@@ -1,8 +1,22 @@
-<mat-list-item>
-  <mat-checkbox [checked]="todo.completed" (change)="onCheckboxChange()">
-    {{ todo.title }}
-  </mat-checkbox>
-  <button mat-icon-button color="warn" (click)="onDeleteClick()">
-    <mat-icon>delete</mat-icon>
-  </button>
-</mat-list-item>
+<mat-card class="todo-card" [class.completed]="todo.completed">
+  <mat-card-content>
+    <div class="todo-content">
+      <div class="todo-left">
+        <mat-checkbox [checked]="todo.completed" (change)="onCheckboxChange()">
+        </mat-checkbox>
+        <div class="todo-text">
+          <h3 class="todo-title" [class.completed]="todo.completed">{{ todo.title }}</h3>
+          <p class="todo-description" *ngIf="todo.description" [class.completed]="todo.completed">
+            {{ todo.description }}
+          </p>
+        </div>
+      </div>
+      
+      <div class="todo-actions">
+        <button mat-mini-fab color="warn" (click)="onDeleteClick()" aria-label="Delete todo">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

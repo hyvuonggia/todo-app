@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatListModule } from '@angular/material/list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,13 +14,14 @@ import { TodoItemComponent } from '../todo-item/todo-item.component';
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatListModule, MatCheckboxModule, MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, FormsModule, TodoItemComponent],
+  imports: [CommonModule, MatCardModule, MatCheckboxModule, MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, FormsModule, TodoItemComponent],
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
   todos: Todo[] = [];
   newTodoTitle: string = '';
+  newTodoDescription: string = '';
 
   constructor(private todoService: TodoService) { }
 
@@ -37,10 +37,15 @@ export class TodoListComponent implements OnInit {
 
   addTodo(): void {
     if (this.newTodoTitle.trim()) {
-      const newTodo: Todo = { title: this.newTodoTitle, completed: false };
+      const newTodo: Todo = { 
+        title: this.newTodoTitle, 
+        description: this.newTodoDescription.trim() || undefined,
+        completed: false 
+      };
       this.todoService.createTodo(newTodo).subscribe(todo => {
         this.todos.push(todo);
         this.newTodoTitle = '';
+        this.newTodoDescription = '';
       });
     }
   }
