@@ -3,6 +3,7 @@ package com.example.todoapp.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.example.todoapp.model.Todo;
 import com.example.todoapp.service.TodoService;
@@ -83,5 +85,21 @@ public class TodoController {
     public ResponseEntity<?> deleteTodo(@PathVariable Long id) {
         todoService.deleteTodo(id);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Exception handler for RuntimeExceptions thrown by service methods.
+     * Maps specific error messages to appropriate HTTP status codes.
+     */
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        String message = ex.getMessage();
+        if (message.contains("not found")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        } else if (message.contains("not authorized")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+        }
     }
 }

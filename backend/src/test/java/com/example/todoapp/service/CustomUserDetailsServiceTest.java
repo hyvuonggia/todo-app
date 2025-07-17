@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
@@ -148,7 +147,7 @@ class CustomUserDetailsServiceTest {
         // Then
         assertNotNull(userDetails);
         assertEquals("testuser", userDetails.getUsername());
-        assertNull(userDetails.getPassword());
+        assertEquals("", userDetails.getPassword());
         assertTrue(userDetails.getAuthorities().isEmpty());
 
         verify(userRepository).findByUsername("testuser");

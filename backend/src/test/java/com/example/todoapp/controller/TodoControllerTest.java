@@ -3,6 +3,8 @@ package com.example.todoapp.controller;
 import com.example.todoapp.model.Todo;
 import com.example.todoapp.model.User;
 import com.example.todoapp.service.TodoService;
+import com.example.todoapp.service.CustomUserDetailsService;
+import com.example.todoapp.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +33,12 @@ class TodoControllerTest {
 
     @MockBean
     private TodoService todoService;
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -135,7 +143,7 @@ class TodoControllerTest {
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isNotFound());
 
         verify(todoService).updateTodo(eq(999L), any(Todo.class));
     }
@@ -159,7 +167,7 @@ class TodoControllerTest {
 
         mockMvc.perform(delete("/api/todos/999")
                 .with(csrf()))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isNotFound());
 
         verify(todoService).deleteTodo(999L);
     }
@@ -172,7 +180,7 @@ class TodoControllerTest {
 
         mockMvc.perform(delete("/api/todos/1")
                 .with(csrf()))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isForbidden());
 
         verify(todoService).deleteTodo(1L);
     }

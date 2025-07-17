@@ -197,7 +197,7 @@ class TodoControllerIntegrationTest {
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -206,7 +206,7 @@ class TodoControllerIntegrationTest {
         // When & Then
         mockMvc.perform(delete("/api/todos/999")
                 .with(csrf()))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -240,7 +240,7 @@ class TodoControllerIntegrationTest {
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isForbidden());
 
         // Verify todo was not updated
         var unchangedTodo = todoRepository.findById(existingTodo.getId());
@@ -271,7 +271,7 @@ class TodoControllerIntegrationTest {
         // When & Then
         mockMvc.perform(delete("/api/todos/" + existingTodo.getId())
                 .with(csrf()))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isForbidden());
 
         // Verify todo still exists
         var stillExistsTodo = todoRepository.findById(existingTodo.getId());
