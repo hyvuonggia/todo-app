@@ -27,29 +27,39 @@ export class AuthService {
     return userStr ? JSON.parse(userStr) : null;
   }
 
+  private storeAuthData(response: any): void {
+    if (response.token) {
+      localStorage.setItem('jwt_token', response.token);
+
+      // Store user information
+      const userInfo: UserInfo = {
+        username: response.username,
+        email: response.email
+      };
+      localStorage.setItem('user_info', JSON.stringify(userInfo));
+
+      this.loggedIn.next(true);
+      this.currentUser.next(userInfo);
+    }
+  }
+
   login(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        console.log('Login response:', response); // Log the full response
-        if (response.token) {
-          localStorage.setItem('jwt_token', response.token);
-
-          // Store user information
-          const userInfo: UserInfo = {
-            username: response.username,
-            email: response.email
-          };
-          localStorage.setItem('user_info', JSON.stringify(userInfo));
-
-          this.loggedIn.next(true);
-          this.currentUser.next(userInfo);
-        }
+        console.log('Login response:', response);
+        this.storeAuthData(response);
       })
     );
   }
 
   register(credentials: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/register`, credentials);
+    return this.http.post<any>(`${this.apiUrl}/register`, credentials).pipe(
+      tap(response => {
+        console.log('Register response:', response);
+        // The backend now returns the same format as login (token + user info)
+        this.storeAuthData(response);
+      })
+    );
   }
 
   logout(): void {

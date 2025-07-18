@@ -1,17 +1,39 @@
 <mat-card>
   <mat-card-title>Register</mat-card-title>
   <mat-card-content>
-    <form (ngSubmit)="register()">
+    <form [formGroup]="registerForm" (ngSubmit)="register()">
       <mat-form-field appearance="fill">
         <mat-label>Username</mat-label>
-        <input matInput [(ngModel)]="username" name="username" required>
+        <input matInput formControlName="username" placeholder="Enter your username">
+        <mat-error *ngIf="username?.invalid && username?.touched">
+          <span *ngIf="username?.errors?.['required']">Username is required</span>
+          <span *ngIf="username?.errors?.['minlength']">Username must be at least 3 characters</span>
+        </mat-error>
       </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="Enter your email address">
+        <mat-error *ngIf="email?.invalid && email?.touched">
+          <span *ngIf="email?.errors?.['required']">Email is required</span>
+          <span *ngIf="email?.errors?.['email']">Please enter a valid email address</span>
+        </mat-error>
+      </mat-form-field>
+
       <mat-form-field appearance="fill">
         <mat-label>Password</mat-label>
-        <input matInput type="password" [(ngModel)]="password" name="password" required>
+        <input matInput type="password" formControlName="password" placeholder="Enter your password">
+        <mat-error *ngIf="password?.invalid && password?.touched">
+          <span *ngIf="password?.errors?.['required']">Password is required</span>
+          <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+        </mat-error>
       </mat-form-field>
-      <button mat-raised-button color="primary" type="submit">Register</button>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid">
+        Register & Login
+      </button>
     </form>
+
     <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
     <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
     <p>Already have an account? <a routerLink="/login">Login here</a></p>

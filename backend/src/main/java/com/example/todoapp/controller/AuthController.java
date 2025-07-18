@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
+import com.example.todoapp.dto.LoginRequest;
+import com.example.todoapp.dto.RegisterRequest;
 import com.example.todoapp.model.JwtResponse;
 import com.example.todoapp.model.User;
 import com.example.todoapp.service.CustomUserDetailsService;
@@ -48,15 +50,38 @@ public class AuthController {
     private CustomUserDetailsService userDetailsService;
 
     /**
-     * Registers a new user in the system.
+     * Registers a new user in the system and automatically logs them in.
      * 
-     * @param user the user registration information
-     * @return ResponseEntity containing the registered user information
+     * @param registerRequest the user registration information
+     * @return ResponseEntity containing JWT token and user information
      */
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
         try {
-            return ResponseEntity.ok(userService.registerUser(user));
+            // Create User entity from the request
+            User user = new User();
+            user.setUsername(registerRequest.getUsername());
+            user.setEmail(registerRequest.getEmail());
+            user.setPassword(registerRequest.getPassword());
+            
+            // Store the original password for authentication
+            String originalPassword = registerRequest.getPassword();
+            
+            // Register the new user (this will encode the password)
+            User registeredUser = userService.registerUser(user);
+            
+            // Automatically authenticate the user with the original password
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(registerRequest.getUsername(), originalPassword));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Generate JWT token
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(registerRequest.getUsername());
+            final String token = jwtUtil.generateToken(userDetails);
+
+            // Return the same response format as login
+            return ResponseEntity.ok(new JwtResponse(token, registeredUser.getUsername(), registeredUser.getEmail()));
+            
         } catch (DataIntegrityViolationException e) {
             String message = e.getMessage();
             if (message.contains("email")) {
@@ -66,34 +91,30 @@ public class AuthController {
             } else {
                 return ResponseEntity.badRequest().body("Registration failed: " + e.getMessage());
             }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Registration failed: " + e.getMessage());
         }
     }
 
     /**
      * Authenticates a user and returns a JWT token.
      * 
-     * @param user the user login credentials (username and password)
+     * @param loginRequest the user login credentials (username and password)
      * @return ResponseEntity containing a JWT token if authentication is successful
      * @throws org.springframework.security.authentication.BadCredentialsException if credentials are invalid
      */
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody User user) {
-        // Check for null or empty username/password
-        if (user.getUsername() == null || user.getUsername().trim().isEmpty() ||
-            user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Username and password are required");
-        }
-
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
             final String token = jwtUtil.generateToken(userDetails);
             
             // Get the full user information
-            User authenticatedUser = userService.findByUsername(user.getUsername());
+            User authenticatedUser = userService.findByUsername(loginRequest.getUsername());
 
             return ResponseEntity.ok(new JwtResponse(token, authenticatedUser.getUsername(), authenticatedUser.getEmail()));
         } catch (AuthenticationException e) {

@@ -1,6 +1,7 @@
 package com.example.todoapp.controller;
 
-import com.example.todoapp.model.JwtResponse;
+import com.example.todoapp.dto.LoginRequest;
+import com.example.todoapp.dto.RegisterRequest;
 import com.example.todoapp.model.User;
 import com.example.todoapp.service.CustomUserDetailsService;
 import com.example.todoapp.service.UserService;
@@ -64,10 +65,12 @@ class AuthControllerTest {
     void registerUser_Success() throws Exception {
         when(userService.registerUser(any(User.class))).thenReturn(testUser);
 
+        RegisterRequest registerRequest = new RegisterRequest("testuser", "test@example.com", "password123");
+
         mockMvc.perform(post("/api/auth/register")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(testUser)))
+                .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("testuser"))
                 .andExpect(jsonPath("$.email").value("test@example.com"));
@@ -78,14 +81,13 @@ class AuthControllerTest {
     @Test
     @WithMockUser
     void registerUser_InvalidInput() throws Exception {
-        User invalidUser = new User();
-        // Missing required fields
+        RegisterRequest invalidRequest = new RegisterRequest("", "", "");
 
         mockMvc.perform(post("/api/auth/register")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidUser)))
-                .andExpect(status().isOk()); // Note: Validation would need to be added to controller
+                .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -99,10 +101,9 @@ class AuthControllerTest {
                 .thenReturn(authentication);
         when(userDetailsService.loadUserByUsername(anyString())).thenReturn(userDetails);
         when(jwtUtil.generateToken(userDetails)).thenReturn(expectedToken);
+        when(userService.findByUsername("testuser")).thenReturn(testUser);
 
-        User loginRequest = new User();
-        loginRequest.setUsername("testuser");
-        loginRequest.setPassword("password123");
+        LoginRequest loginRequest = new LoginRequest("testuser", "password123");
 
         mockMvc.perform(post("/api/auth/login")
                 .with(csrf())
@@ -122,9 +123,7 @@ class AuthControllerTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new org.springframework.security.authentication.BadCredentialsException("Invalid credentials"));
 
-        User loginRequest = new User();
-        loginRequest.setUsername("testuser");
-        loginRequest.setPassword("wrongpassword");
+        LoginRequest loginRequest = new LoginRequest("testuser", "wrongpassword");
 
         mockMvc.perform(post("/api/auth/login")
                 .with(csrf())
@@ -136,10 +135,12 @@ class AuthControllerTest {
     @Test
     @WithMockUser
     void loginUser_EmptyRequest() throws Exception {
+        LoginRequest emptyRequest = new LoginRequest("", "");
+
         mockMvc.perform(post("/api/auth/login")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content(objectMapper.writeValueAsString(emptyRequest)))
                 .andExpect(status().isBadRequest());
     }
 }

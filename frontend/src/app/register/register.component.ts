@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,31 +12,61 @@ import { Router, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  username!: string;
-  password!: string;
+  registerForm: FormGroup;
   errorMessage: string = '';
   successMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private formBuilder: FormBuilder
+  ) {
+    this.registerForm = this.formBuilder.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
+
+  get username() { return this.registerForm.get('username'); }
+  get email() { return this.registerForm.get('email'); }
+  get password() { return this.registerForm.get('password'); }
 
   register(): void {
-    this.authService.register({ username: this.username, password: this.password }).subscribe({
-      next: () => {
-        this.successMessage = 'Registration successful! You can now log in.';
-        this.errorMessage = '';
-        // Optionally, navigate to login page after successful registration
-        this.router.navigate(['/login']);
-      },
-      error: (err) => {
-        this.errorMessage = 'Registration failed. Please try again.';
-        this.successMessage = '';
-        console.error('Registration error:', err);
-      }
+    if (this.registerForm.valid) {
+      const formData = this.registerForm.value;
+      this.authService.register(formData).subscribe({
+        next: (response) => {
+          console.log('Registration successful:', response);
+          this.successMessage = 'Registration successful! Welcome!';
+          this.errorMessage = '';
+          // Navigate to todo list since user is now automatically logged in
+          this.router.navigate(['/todos']);
+        },
+        error: (err) => {
+          console.error('Registration error:', err);
+          if (err.error && typeof err.error === 'string') {
+            this.errorMessage = err.error;
+          } else {
+            this.errorMessage = 'Registration failed. Please try again.';
+          }
+          this.successMessage = '';
+        }
+      });
+    } else {
+      this.markFormGroupTouched();
+    }
+  }
+
+  private markFormGroupTouched(): void {
+    Object.keys(this.registerForm.controls).forEach(key => {
+      const control = this.registerForm.get(key);
+      control?.markAsTouched();
     });
   }
 }

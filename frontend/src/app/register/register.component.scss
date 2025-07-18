@@ -7,18 +7,44 @@ mat-card {
 mat-form-field {
   width: 100%;
   margin-bottom: 15px;
+
+  &.ng-invalid.ng-touched {
+    .mat-mdc-form-field-outline {
+      border-color: #f44336;
+    }
+  }
 }
 
 button {
   width: 100%;
+  margin-top: 10px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
 .error-message {
-  color: red;
+  color: #f44336;
   margin-top: 10px;
+  font-size: 14px;
 }
 
 .success-message {
-  color: green;
+  color: #4caf50;
   margin-top: 10px;
+  font-size: 14px;
+}
+
+mat-error {
+  font-size: 12px;
+  color: #f44336;
+}
+
+// Additional styling for better UX
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
