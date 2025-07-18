@@ -15,6 +15,17 @@
     </p>
   </div>
 
+  <div class="todo-dates" *ngIf="todo.createdAt">
+    <div class="date-info">
+      <span class="date-label">Created:</span>
+      <span class="date-value">{{ formatDate(todo.createdAt) }}</span>
+    </div>
+    <div class="date-info" *ngIf="todo.lastModified && todo.lastModified !== todo.createdAt">
+      <span class="date-label">Modified:</span>
+      <span class="date-value">{{ formatDate(todo.lastModified) }}</span>
+    </div>
+  </div>
+
   <div class="todo-footer">
     <div class="todo-status">
       <span class="status-indicator" [class.completed]="todo.completed">

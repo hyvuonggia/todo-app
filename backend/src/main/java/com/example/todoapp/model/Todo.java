@@ -1,5 +1,10 @@
 package com.example.todoapp.model;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -56,4 +61,19 @@ public class Todo {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    /**
+     * The date and time when this todo item was created.
+     * Automatically set when the entity is first persisted.
+     */
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    /**
+     * The date and time when this todo item was last modified.
+     * Automatically updated whenever the entity is modified.
+     */
+    @UpdateTimestamp
+    private LocalDateTime lastModified;
 }

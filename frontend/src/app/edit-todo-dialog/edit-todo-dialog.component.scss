@@ -1,0 +1,72 @@
+.dialog-content {
+  min-width: 400px;
+  max-width: 600px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+h2[mat-dialog-title] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+
+  mat-icon {
+    color: #ff9800;
+  }
+}
+
+[mat-dialog-content] {
+  padding: 0 24px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+[mat-dialog-actions] {
+  padding: 16px 24px;
+  margin-bottom: 0;
+
+  button {
+    margin-left: 8px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+mat-form-field {
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+    max-height: 300px;
+  }
+
+  mat-hint {
+    font-size: 12px;
+    color: #666;
+  }
+}
+
+// Mobile responsiveness
+@media (max-width: 600px) {
+  .dialog-content {
+    min-width: 300px;
+    max-width: 100vw;
+  }
+
+  [mat-dialog-content] {
+    padding: 0 16px;
+  }
+
+  [mat-dialog-actions] {
+    padding: 16px;
+  }
+}

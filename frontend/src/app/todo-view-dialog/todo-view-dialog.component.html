@@ -30,6 +30,26 @@
       </div>
     </div>
 
+    <div class="date-section" *ngIf="todo.createdAt">
+      <h3 class="section-title">Timeline</h3>
+      <div class="date-info">
+        <div class="date-item">
+          <mat-icon class="date-icon">schedule</mat-icon>
+          <div class="date-details">
+            <span class="date-label">Created</span>
+            <span class="date-value">{{ formatDate(todo.createdAt) }}</span>
+          </div>
+        </div>
+        <div class="date-item" *ngIf="todo.lastModified && todo.lastModified !== todo.createdAt">
+          <mat-icon class="date-icon">update</mat-icon>
+          <div class="date-details">
+            <span class="date-label">Last Modified</span>
+            <span class="date-value">{{ formatDate(todo.lastModified) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="empty-description" *ngIf="!todo.description">
       <mat-icon class="empty-icon">description</mat-icon>
       <p>No description provided for this todo.</p>

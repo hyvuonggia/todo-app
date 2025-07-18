@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { Todo } from '../models/todo';
 import { TodoViewDialogComponent } from '../todo-view-dialog/todo-view-dialog.component';
+import { EditTodoDialogComponent } from '../edit-todo-dialog/edit-todo-dialog.component';
 
 @Component({
   selector: 'app-todo-item',
@@ -39,9 +40,9 @@ export class TodoItemComponent {
       if (result) {
         if (result.action === 'delete') {
           this.onDeleteClick();
-        } else if (result.action === 'edit') {
-          // Future: could open edit dialog
-          console.log('Edit functionality to be implemented');
+        } else if (result.id) {
+          // Handle updated todo from edit dialog (passed through view dialog)
+          this.update.emit(result);
         } else if (result.completed !== undefined) {
           // Handle toggle completion from dialog
           this.todo.completed = result.completed;
@@ -53,5 +54,40 @@ export class TodoItemComponent {
 
   onDeleteClick(): void {
     this.delete.emit(this.todo.id);
+  }
+
+  openEditDialog(): void {
+    const dialogRef = this.dialog.open(EditTodoDialogComponent, {
+      width: '600px',
+      maxWidth: '90vw',
+      data: { ...this.todo }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.update.emit(result);
+      }
+    });
+  }
+
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMilliseconds = now.getTime() - date.getTime();
+    const diffInHours = diffInMilliseconds / (1000 * 60 * 60);
+    const diffInDays = diffInHours / 24;
+
+    if (diffInHours < 1) {
+      const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
+      return diffInMinutes < 1 ? 'Just now' : `${diffInMinutes}m ago`;
+    } else if (diffInHours < 24) {
+      return `${Math.floor(diffInHours)}h ago`;
+    } else if (diffInDays < 7) {
+      return `${Math.floor(diffInDays)}d ago`;
+    } else {
+      return date.toLocaleDateString();
+    }
   }
 }

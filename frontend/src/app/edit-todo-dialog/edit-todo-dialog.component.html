@@ -1,0 +1,41 @@
+<div class="dialog-content">
+  <h2 mat-dialog-title>
+    <mat-icon>edit</mat-icon>
+    Edit Todo
+  </h2>
+
+  <div mat-dialog-content>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Todo Title</mat-label>
+      <input matInput
+             [(ngModel)]="title"
+             (keyup.enter)="onSave()"
+             placeholder="What needs to be done?"
+             required
+             autofocus>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Description (Optional)</mat-label>
+      <textarea matInput
+                [(ngModel)]="description"
+                rows="5"
+                maxlength="5000"
+                placeholder="Add more details about this task..."></textarea>
+      <mat-hint>{{ description.length }}/5000 characters</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">
+      Cancel
+    </button>
+    <button mat-raised-button
+            color="primary"
+            (click)="onSave()"
+            [disabled]="!title.trim() || !hasChanges()">
+      <mat-icon>save</mat-icon>
+      Save Changes
+    </button>
+  </div>
+</div>
