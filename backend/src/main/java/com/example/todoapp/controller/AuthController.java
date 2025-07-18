@@ -91,8 +91,11 @@ public class AuthController {
 
             final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
             final String token = jwtUtil.generateToken(userDetails);
+            
+            // Get the full user information
+            User authenticatedUser = userService.findByUsername(user.getUsername());
 
-            return ResponseEntity.ok(new JwtResponse(token));
+            return ResponseEntity.ok(new JwtResponse(token, authenticatedUser.getUsername(), authenticatedUser.getEmail()));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }

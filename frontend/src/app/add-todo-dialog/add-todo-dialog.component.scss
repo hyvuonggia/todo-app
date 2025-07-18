@@ -1,6 +1,6 @@
 .dialog-content {
   min-width: 400px;
-  max-width: 500px;
+  max-width: 600px;
 }
 
 .full-width {
@@ -21,7 +21,7 @@ h2[mat-dialog-title] {
 
 [mat-dialog-content] {
   padding: 0 24px;
-  max-height: 400px;
+  max-height: 500px;
   overflow-y: auto;
 }
 
@@ -41,5 +41,16 @@ h2[mat-dialog-title] {
 mat-form-field {
   &:last-of-type {
     margin-bottom: 0;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+    max-height: 300px;
+  }
+
+  mat-hint {
+    font-size: 12px;
+    color: #666;
   }
 }

@@ -1,22 +1,36 @@
-<mat-card class="todo-card" [class.completed]="todo.completed">
-  <mat-card-content>
-    <div class="todo-content">
-      <div class="todo-left">
-        <mat-checkbox [checked]="todo.completed" (change)="onCheckboxChange()">
-        </mat-checkbox>
-        <div class="todo-text">
-          <h3 class="todo-title" [class.completed]="todo.completed">{{ todo.title }}</h3>
-          <p class="todo-description" *ngIf="todo.description" [class.completed]="todo.completed">
-            {{ todo.description }}
-          </p>
-        </div>
-      </div>
-      
-      <div class="todo-actions">
-        <button mat-mini-fab color="warn" (click)="onDeleteClick()" aria-label="Delete todo">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
+<div class="todo-card" [class.completed]="todo.completed" (click)="onCardClick()">
+  <div class="todo-header">
+    <mat-checkbox
+      [checked]="todo.completed"
+      (change)="onCheckboxChange()"
+      (click)="$event.stopPropagation()"
+      class="todo-checkbox">
+    </mat-checkbox>
+    <h3 class="todo-title" [class.completed]="todo.completed">{{ todo.title }}</h3>
+  </div>
+
+  <div class="todo-body" *ngIf="todo.description">
+    <p class="todo-description" [class.completed]="todo.completed">
+      {{ todo.description }}
+    </p>
+  </div>
+
+  <div class="todo-footer">
+    <div class="todo-status">
+      <span class="status-indicator" [class.completed]="todo.completed">
+        <mat-icon>{{ todo.completed ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+        {{ todo.completed ? 'Completed' : 'Pending' }}
+      </span>
     </div>
-  </mat-card-content>
-</mat-card>
+
+    <div class="todo-actions">
+      <button
+        mat-icon-button
+        (click)="onDeleteClick(); $event.stopPropagation()"
+        class="delete-button"
+        aria-label="Delete todo">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

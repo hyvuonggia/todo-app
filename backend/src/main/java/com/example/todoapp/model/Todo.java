@@ -1,5 +1,6 @@
 package com.example.todoapp.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,6 +40,7 @@ public class Todo {
      * Detailed description of the todo item.
      * Optional field providing more context about the task.
      */
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     /**

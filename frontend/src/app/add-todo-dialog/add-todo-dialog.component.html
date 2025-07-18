@@ -19,8 +19,10 @@
       <mat-label>Description (Optional)</mat-label>
       <textarea matInput
                 [(ngModel)]="description"
-                rows="3"
+                rows="5"
+                maxlength="5000"
                 placeholder="Add more details about this task..."></textarea>
+      <mat-hint>{{ description.length }}/5000 characters</mat-hint>
     </mat-form-field>
   </div>
 

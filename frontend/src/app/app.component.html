@@ -1,9 +1,21 @@
 <mat-toolbar color="primary">
   <span>{{ title }}</span>
   <span class="spacer"></span>
-  <button mat-button *ngIf="authService.isLoggedIn() | async" (click)="logout()">
-    <mat-icon>logout</mat-icon> Logout
-  </button>
+
+  <!-- Welcome message for logged-in users -->
+  <div class="welcome-section" *ngIf="authService.isLoggedIn() | async">
+    <div class="welcome-message">
+      <mat-icon class="user-icon">account_circle</mat-icon>
+      <span class="welcome-text">
+        Welcome, <strong>{{ (authService.getCurrentUser() | async)?.username || 'User' }}</strong>
+      </span>
+    </div>
+
+    <button mat-button (click)="logout()" class="logout-button">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  </div>
 </mat-toolbar>
 
 <div class="content">

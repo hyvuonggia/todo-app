@@ -1,0 +1,53 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <div class="header-content">
+      <mat-checkbox
+        [checked]="todo.completed"
+        (change)="onToggleComplete()"
+        class="todo-checkbox">
+      </mat-checkbox>
+      <h2 class="todo-title" [class.completed]="todo.completed">
+        {{ todo.title }}
+      </h2>
+    </div>
+    <button mat-icon-button (click)="onClose()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog-content" [attr.data-has-description]="!!todo.description">
+    <div class="status-section">
+      <div class="status-indicator" [class.completed]="todo.completed">
+        <mat-icon>{{ todo.completed ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+        <span>{{ todo.completed ? 'Completed' : 'Pending' }}</span>
+      </div>
+    </div>
+
+    <div class="description-section" *ngIf="todo.description">
+      <h3 class="section-title">Description</h3>
+      <div class="description-content" [class.completed]="todo.completed">
+        {{ todo.description }}
+      </div>
+    </div>
+
+    <div class="empty-description" *ngIf="!todo.description">
+      <mat-icon class="empty-icon">description</mat-icon>
+      <p>No description provided for this todo.</p>
+    </div>
+  </div>
+
+  <div class="dialog-actions">
+    <button mat-button (click)="onEdit()" class="edit-button">
+      <mat-icon>edit</mat-icon>
+      Edit
+    </button>
+    <button mat-button color="warn" (click)="onDelete()" class="delete-button">
+      <mat-icon>delete</mat-icon>
+      Delete
+    </button>
+    <button mat-raised-button color="primary" (click)="onToggleComplete()">
+      <mat-icon>{{ todo.completed ? 'undo' : 'check' }}</mat-icon>
+      {{ todo.completed ? 'Mark Pending' : 'Mark Complete' }}
+    </button>
+  </div>
+</div>

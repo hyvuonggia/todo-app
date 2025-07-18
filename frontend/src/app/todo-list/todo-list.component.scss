@@ -50,24 +50,38 @@
 .todo-cards-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 20px;
   width: 100%;
 
   app-todo-item {
-    flex: 0 0 calc(33.333% - 16px);
-    max-width: calc(33.333% - 16px);
+    flex: 0 0 calc(20% - 16px);
+    max-width: calc(20% - 16px);
     display: block;
   }
 
   // Responsive design for smaller screens
-  @media (max-width: 1200px) {
+  @media (max-width: 1600px) {
     app-todo-item {
-      flex: 0 0 calc(50% - 12px);
-      max-width: calc(50% - 12px);
+      flex: 0 0 calc(25% - 15px);
+      max-width: calc(25% - 15px);
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
+    app-todo-item {
+      flex: 0 0 calc(33.333% - 14px);
+      max-width: calc(33.333% - 14px);
+    }
+  }
+
+  @media (max-width: 900px) {
+    app-todo-item {
+      flex: 0 0 calc(50% - 10px);
+      max-width: calc(50% - 10px);
+    }
+  }
+
+  @media (max-width: 600px) {
     app-todo-item {
       flex: 0 0 100%;
       max-width: 100%;
@@ -106,33 +120,5 @@
   .page-container {
     padding: 16px;
     gap: 24px;
-  }
-
-  .create-todo-card {
-    mat-card-title {
-      padding: 16px 16px 0;
-      font-size: 20px;
-    }
-  }
-}
-
-@media (min-width: 601px) and (max-width: 900px) {
-  .todo-cards-container {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px;
-  }
-}
-
-@media (min-width: 901px) and (max-width: 1200px) {
-  .todo-cards-container {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 18px;
-  }
-}
-
-@media (min-width: 1201px) {
-  .todo-cards-container {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
   }
 }

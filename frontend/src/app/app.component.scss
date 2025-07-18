@@ -7,3 +7,75 @@
   width: 100%;
   min-height: calc(100vh - 64px); /* Adjust based on toolbar height */
 }
+
+.welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  .welcome-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+
+    .user-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .welcome-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+
+      strong {
+        color: white;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .logout-button {
+    color: white;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .welcome-section {
+    gap: 12px;
+
+    .welcome-message .welcome-text {
+      font-size: 12px;
+    }
+
+    .logout-button {
+      mat-icon {
+        margin-right: 0;
+      }
+
+      // Hide text on very small screens, show only icon
+      span:not(mat-icon) {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-section {
+    .welcome-message .welcome-text {
+      display: none; // Hide welcome text on very small screens
+    }
+  }
+}

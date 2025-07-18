@@ -37,4 +37,16 @@ public class UserService {
         user.setProvider("local");
         return userRepository.save(user);
     }
+    
+    /**
+     * Finds a user by username.
+     * 
+     * @param username the username to search for
+     * @return the user entity if found
+     * @throws RuntimeException if user is not found
+     */
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+    }
 }
