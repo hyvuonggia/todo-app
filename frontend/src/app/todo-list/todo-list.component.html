@@ -1,38 +1,25 @@
 <div class="page-container">
-  <!-- Create Todo Section -->
-  <div class="create-todo-section">
-    <mat-card class="create-todo-card">
-      <mat-card-title>Create New Todo</mat-card-title>
-      <mat-card-content>
-        <div class="add-todo-section">
-          <mat-form-field appearance="fill" class="title-field">
-            <mat-label>Todo Title</mat-label>
-            <input matInput [(ngModel)]="newTodoTitle" (keyup.enter)="addTodo()" placeholder="What needs to be done?">
-          </mat-form-field>
-          
-          <mat-form-field appearance="fill" class="description-field">
-            <mat-label>Description (Optional)</mat-label>
-            <textarea matInput [(ngModel)]="newTodoDescription" rows="3" placeholder="Add more details about this task..."></textarea>
-          </mat-form-field>
-          
-          <button mat-raised-button color="primary" (click)="addTodo()">
-            <mat-icon>add</mat-icon> Add Todo
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
+  <!-- Add Todo Button -->
+  <div class="add-todo-section">
+    <button mat-raised-button
+            color="primary"
+            (click)="openAddTodoDialog()"
+            class="add-todo-button">
+      <mat-icon>add</mat-icon>
+      Add Todo
+    </button>
   </div>
 
   <!-- Todo List Section -->
   <div class="todos-section">
     <h2 class="section-title" *ngIf="todos.length > 0">My Todos</h2>
-    
+
     <div class="todo-cards-container">
       <app-todo-item *ngFor="let todo of todos" [todo]="todo" (update)="updateTodo($event)" (delete)="deleteTodo($event)"></app-todo-item>
-      
+
       <div class="empty-state" *ngIf="todos.length === 0">
         <mat-icon class="empty-icon">assignment</mat-icon>
-        <p>No todos yet. Create your first todo above!</p>
+        <p>No todos yet. Click "Add Todo" to create your first todo!</p>
       </div>
     </div>
   </div>

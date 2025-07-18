@@ -4,26 +4,26 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { TodoService } from '../services/todo.service';
 import { Todo } from '../models/todo';
 import { TodoItemComponent } from '../todo-item/todo-item.component';
+import { AddTodoDialogComponent } from '../add-todo-dialog/add-todo-dialog.component';
 
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatCheckboxModule, MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, FormsModule, TodoItemComponent],
+  imports: [CommonModule, MatCardModule, MatCheckboxModule, MatButtonModule, MatIconModule, TodoItemComponent],
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
   todos: Todo[] = [];
-  newTodoTitle: string = '';
-  newTodoDescription: string = '';
 
-  constructor(private todoService: TodoService) { }
+  constructor(
+    private todoService: TodoService,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     this.loadTodos();
@@ -35,19 +35,23 @@ export class TodoListComponent implements OnInit {
     });
   }
 
-  addTodo(): void {
-    if (this.newTodoTitle.trim()) {
-      const newTodo: Todo = { 
-        title: this.newTodoTitle, 
-        description: this.newTodoDescription.trim() || undefined,
-        completed: false 
-      };
-      this.todoService.createTodo(newTodo).subscribe(todo => {
-        this.todos.push(todo);
-        this.newTodoTitle = '';
-        this.newTodoDescription = '';
-      });
-    }
+  openAddTodoDialog(): void {
+    const dialogRef = this.dialog.open(AddTodoDialogComponent, {
+      width: '500px',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.addTodo(result);
+      }
+    });
+  }
+
+  addTodo(todoData: Partial<Todo>): void {
+    this.todoService.createTodo(todoData as Todo).subscribe(todo => {
+      this.todos.push(todo);
+    });
   }
 
   updateTodo(todo: Todo): void {
