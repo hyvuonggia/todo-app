@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { QuillModule } from 'ngx-quill';
 import { Todo } from '../models/todo';
 
 @Component({
@@ -18,7 +19,8 @@ import { Todo } from '../models/todo';
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
-    FormsModule
+    FormsModule,
+    QuillModule
   ],
   templateUrl: './edit-todo-dialog.component.html',
   styleUrls: ['./edit-todo-dialog.component.scss']
@@ -28,6 +30,17 @@ export class EditTodoDialogComponent {
   description: string;
   originalTitle: string;
   originalDescription: string;
+
+  quillModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'],
+      [{ 'header': 1 }, { 'header': 2 }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'color': [] }, { 'background': [] }],
+      ['clean']
+    ]
+  };
 
   constructor(
     public dialogRef: MatDialogRef<EditTodoDialogComponent>,

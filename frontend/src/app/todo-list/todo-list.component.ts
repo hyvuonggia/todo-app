@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
+import { QuillModule } from 'ngx-quill';
 import { TodoService } from '../services/todo.service';
 import { Todo } from '../models/todo';
 import { TodoItemComponent } from '../todo-item/todo-item.component';
@@ -13,7 +17,18 @@ import { AddTodoDialogComponent } from '../add-todo-dialog/add-todo-dialog.compo
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatCheckboxModule, MatButtonModule, MatIconModule, TodoItemComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    TodoItemComponent,
+    QuillModule
+  ],
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss']
 })

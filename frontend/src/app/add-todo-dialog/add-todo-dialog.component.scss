@@ -1,6 +1,7 @@
 .dialog-content {
   min-width: 400px;
   max-width: 600px;
+  padding: 16px;
 }
 
 .full-width {
@@ -8,14 +9,25 @@
   margin-bottom: 16px;
 }
 
-h2[mat-dialog-title] {
+.description-field {
+  margin-bottom: 24px;
+
+  .mat-form-field-label {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+  }
+}
+
+h2 {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin: 0 0 24px;
 
   mat-icon {
-    color: #1976d2;
+    color: #673ab7;
   }
 }
 
@@ -26,7 +38,7 @@ h2[mat-dialog-title] {
 }
 
 [mat-dialog-actions] {
-  padding: 16px 24px;
+  padding: 16px 0 0;
   margin-bottom: 0;
 
   button {

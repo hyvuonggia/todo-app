@@ -10,9 +10,7 @@
   </div>
 
   <div class="todo-body" *ngIf="todo.description">
-    <p class="todo-description" [class.completed]="todo.completed">
-      {{ todo.description }}
-    </p>
+    <div class="todo-description" [class.completed]="todo.completed" [innerHTML]="todo.description"></div>
   </div>
 
   <div class="todo-dates" *ngIf="todo.createdAt">

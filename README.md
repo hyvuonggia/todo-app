@@ -10,16 +10,65 @@ This is a simple Todo application built with Angular for the frontend and Spring
 
 ## Technologies Used
 
-*   **Frontend:**
-    *   Angular
-    *   Angular Material
-    *   TypeScript
-*   **Backend:**
-    *   Spring Boot
-    *   Spring Security
-    *   JPA (Hibernate)
-    *   H2 Database
-    *   Maven
+### Frontend:
+* **Core Framework:**
+  * Angular 20.1.0
+  * TypeScript 5.8
+  * RxJS 7.8
+
+* **UI Components & Styling:**
+  * Angular Material 20.1.0
+  * SCSS for styling
+  * Material Icons
+  * Quill.js for rich text editing
+
+* **Development Tools:**
+  * Angular CLI 20.1.0
+  * Node.js and npm
+  * Karma and Jasmine for testing
+  * ESLint for code quality
+
+### Backend:
+* **Core Framework:**
+  * Spring Boot 3.5.3
+  * Java 17
+  * Maven for build management
+
+* **Security:**
+  * Spring Security
+  * JWT (JSON Web Tokens) with JJWT 0.11.5
+  * BCrypt for password hashing
+
+* **Database & ORM:**
+  * MySQL (Production)
+  * H2 Database (Testing)
+  * Spring Data JPA
+  * Hibernate as JPA provider
+
+* **Testing:**
+  * JUnit 5
+  * Mockito
+  * Spring Boot Test
+  * Spring Security Test
+
+* **Development Tools:**
+  * Spring Boot DevTools
+  * Lombok for boilerplate reduction
+
+### DevOps & Infrastructure:
+* **Containerization:**
+  * Docker
+  * Docker Compose
+  * Nginx (for frontend serving)
+
+* **API Documentation:**
+  * Comprehensive Javadoc
+  * REST API documentation
+
+* **Development Features:**
+  * Hot reload for both frontend and backend
+  * Environment-specific configurations
+  * CORS configuration for local development
 
 ## Getting Started
 

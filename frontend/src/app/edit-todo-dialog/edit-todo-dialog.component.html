@@ -15,15 +15,13 @@
              autofocus>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Description (Optional)</mat-label>
-      <textarea matInput
-                [(ngModel)]="description"
-                rows="5"
-                maxlength="5000"
-                placeholder="Add more details about this task..."></textarea>
-      <mat-hint>{{ description.length }}/5000 characters</mat-hint>
-    </mat-form-field>
+    <div class="description-field todo-description-editor">
+      <label class="mat-form-field-label">Description (Optional)</label>
+      <quill-editor [(ngModel)]="description"
+                    placeholder="Add more details about this task..."
+                    [modules]="quillModules">
+      </quill-editor>
+    </div>
   </div>
 
   <div mat-dialog-actions align="end">
