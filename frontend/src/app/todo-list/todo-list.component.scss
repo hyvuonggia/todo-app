@@ -16,6 +16,11 @@
   gap: 16px;
 
   .filter-section {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+
     .category-filter {
       min-width: 200px;
 
@@ -30,6 +35,14 @@
           border-radius: 50%;
           display: inline-block;
         }
+      }
+    }
+
+    .search-filter {
+      min-width: 300px;
+      
+      .mat-mdc-form-field-icon-suffix {
+        color: #666;
       }
     }
   }
@@ -149,6 +162,13 @@
     font-weight: 500;
     margin-bottom: 24px;
     color: #333;
+
+    .search-info {
+      font-size: 16px;
+      font-weight: 400;
+      color: #666;
+      font-style: italic;
+    }
   }
 }
 

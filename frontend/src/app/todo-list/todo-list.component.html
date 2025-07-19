@@ -15,6 +15,15 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <mat-form-field appearance="fill" class="search-filter">
+        <mat-label>Search todos...</mat-label>
+        <input matInput
+               [(ngModel)]="searchQuery"
+               (input)="onSearchChange()"
+               placeholder="Search by title, description, or category">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
     </div>
 
     <div class="action-buttons">
@@ -60,17 +69,18 @@
   <!-- Todo List Section -->
   <div class="todos-section">
     <h2 class="section-title" *ngIf="todos.length > 0">
-      {{ selectedCategoryId === null ? 'All Todos' : 
-         selectedCategoryId === 0 ? 'Uncategorized Todos' : 
-         getCategoryName(selectedCategoryId) + ' Todos' }}
+      {{ getSectionTitle() }}
+      <span class="search-info" *ngIf="searchQuery && searchQuery.trim()">
+        - Search: "{{ searchQuery }}"
+      </span>
     </h2>
 
     <div class="todo-cards-container">
       <app-todo-item *ngFor="let todo of todos" [todo]="todo" (update)="updateTodo($event)" (delete)="deleteTodo($event)"></app-todo-item>
 
       <div class="empty-state" *ngIf="todos.length === 0">
-        <mat-icon class="empty-icon">assignment</mat-icon>
-        <p>No todos yet. Click "Add Todo" to create your first todo!</p>
+        <mat-icon class="empty-icon">{{ getEmptyStateIcon() }}</mat-icon>
+        <p>{{ getEmptyStateMessage() }}</p>
       </div>
     </div>
   </div>

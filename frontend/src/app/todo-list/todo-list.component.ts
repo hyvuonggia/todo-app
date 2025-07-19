@@ -38,8 +38,10 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
 })
 export class TodoListComponent implements OnInit {
   todos: Todo[] = [];
+  allTodos: Todo[] = []; // Store all todos for filtering
   categories: Category[] = [];
   selectedCategoryId: number | null = null;
+  searchQuery: string = '';
 
   constructor(
     private todoService: TodoService,
@@ -53,20 +55,11 @@ export class TodoListComponent implements OnInit {
   }
 
   loadTodos(): void {
-    if (this.selectedCategoryId === 0) {
-      // Filter for uncategorized todos (category is null)
-      this.todoService.getTodos().subscribe(todos => {
-        this.todos = todos.filter(todo => !todo.category);
-      });
-    } else if (this.selectedCategoryId !== null) {
-      this.todoService.getTodosByCategory(this.selectedCategoryId).subscribe(todos => {
-        this.todos = todos;
-      });
-    } else {
-      this.todoService.getTodos().subscribe(todos => {
-        this.todos = todos;
-      });
-    }
+    // Always load all todos first
+    this.todoService.getTodos().subscribe(todos => {
+      this.allTodos = todos;
+      this.applyFilters();
+    });
   }
 
   loadCategories(): void {
@@ -76,7 +69,50 @@ export class TodoListComponent implements OnInit {
   }
 
   onCategoryFilterChange(): void {
-    this.loadTodos();
+    this.applyFilters();
+  }
+
+  onSearchChange(): void {
+    this.applyFilters();
+  }
+
+  applyFilters(): void {
+    let filteredTodos = [...this.allTodos];
+
+    // Apply category filter
+    if (this.selectedCategoryId === 0) {
+      // Filter for uncategorized todos (category is null)
+      filteredTodos = filteredTodos.filter(todo => !todo.category);
+    } else if (this.selectedCategoryId !== null) {
+      filteredTodos = filteredTodos.filter(todo => todo.category?.id === this.selectedCategoryId);
+    }
+
+    // Apply search filter
+    if (this.searchQuery && this.searchQuery.trim()) {
+      const query = this.searchQuery.trim().toLowerCase();
+      filteredTodos = filteredTodos.filter(todo => {
+        // Search in title
+        const titleMatch = todo.title.toLowerCase().includes(query);
+        
+        // Search in description (remove HTML tags for search)
+        const descriptionMatch = todo.description ? 
+          this.stripHtmlTags(todo.description).toLowerCase().includes(query) : false;
+        
+        // Search in category name
+        const categoryMatch = todo.category ? 
+          todo.category.name.toLowerCase().includes(query) : false;
+
+        return titleMatch || descriptionMatch || categoryMatch;
+      });
+    }
+
+    this.todos = filteredTodos;
+  }
+
+  private stripHtmlTags(html: string): string {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
   }
 
   openAddTodoDialog(): void {
@@ -154,7 +190,8 @@ export class TodoListComponent implements OnInit {
 
   addTodo(todoData: Partial<Todo>): void {
     this.todoService.createTodo(todoData as Todo).subscribe(todo => {
-      this.todos.push(todo);
+      this.allTodos.push(todo);
+      this.applyFilters();
     });
   }
 
@@ -166,12 +203,13 @@ export class TodoListComponent implements OnInit {
 
   deleteTodo(id: number): void {
     this.todoService.deleteTodo(id).subscribe(() => {
-      this.todos = this.todos.filter(todo => todo.id !== id);
+      this.allTodos = this.allTodos.filter(todo => todo.id !== id);
+      this.applyFilters();
     });
   }
 
   getTodoCountForCategory(categoryId: number): number {
-    return this.todos.filter(todo => todo.category?.id === categoryId).length;
+    return this.allTodos.filter(todo => todo.category?.id === categoryId).length;
   }
 
   getCategoryName(categoryId: number | null): string {
@@ -179,5 +217,38 @@ export class TodoListComponent implements OnInit {
     if (categoryId === 0) return 'Uncategorized';
     const category = this.categories.find(c => c.id === categoryId);
     return category ? category.name : 'Unknown';
+  }
+
+  getSectionTitle(): string {
+    const categoryTitle = this.selectedCategoryId === null ? 'All Todos' : 
+                         this.selectedCategoryId === 0 ? 'Uncategorized Todos' : 
+                         this.getCategoryName(this.selectedCategoryId) + ' Todos';
+    
+    const totalCount = this.todos.length;
+    const totalAllTodos = this.allTodos.length;
+    
+    if (this.searchQuery && this.searchQuery.trim() && totalCount !== totalAllTodos) {
+      return `${categoryTitle} (${totalCount} of ${totalAllTodos})`;
+    }
+    
+    return categoryTitle;
+  }
+
+  getEmptyStateIcon(): string {
+    if (this.searchQuery && this.searchQuery.trim()) {
+      return 'search_off';
+    }
+    return 'assignment';
+  }
+
+  getEmptyStateMessage(): string {
+    if (this.searchQuery && this.searchQuery.trim()) {
+      return `No todos found matching "${this.searchQuery}". Try a different search term.`;
+    }
+    if (this.selectedCategoryId !== null) {
+      const categoryName = this.getCategoryName(this.selectedCategoryId);
+      return `No todos in ${categoryName} category. Click "Add Todo" to create one!`;
+    }
+    return 'No todos yet. Click "Add Todo" to create your first todo!';
   }
 }
