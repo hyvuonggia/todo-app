@@ -1,18 +1,69 @@
 <div class="page-container">
-  <!-- Add Todo Button -->
-  <div class="add-todo-section">
-    <button mat-raised-button
-            color="primary"
-            (click)="openAddTodoDialog()"
-            class="add-todo-button">
-      <mat-icon>add</mat-icon>
-      Add Todo
-    </button>
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="filter-section">
+      <mat-form-field appearance="fill" class="category-filter">
+        <mat-label>Filter by Category</mat-label>
+        <mat-select [(ngModel)]="selectedCategoryId" (selectionChange)="onCategoryFilterChange()">
+          <mat-option [value]="null">All Todos</mat-option>
+          <mat-option [value]="0">Uncategorized</mat-option>
+          <mat-option *ngFor="let category of categories" [value]="category.id">
+            <span class="category-option">
+              <span class="category-color" [style.background-color]="category.color"></span>
+              {{ category.name }}
+            </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="action-buttons">
+      <button mat-raised-button 
+              color="accent" 
+              (click)="openCategoryDialog()"
+              class="category-button">
+        <mat-icon>category</mat-icon>
+        Manage Categories
+      </button>
+      
+      <button mat-raised-button 
+              color="primary" 
+              (click)="openAddTodoDialog()"
+              class="add-todo-button">
+        <mat-icon>add</mat-icon>
+        Add Todo
+      </button>
+    </div>
+  </div>
+
+  <!-- Category Management Section -->
+  <div class="categories-section" *ngIf="categories.length > 0">
+    <h3 class="section-title">Categories</h3>
+    <div class="category-chips">
+      <div *ngFor="let category of categories" class="category-item">
+        <span class="category-chip" [style.background-color]="category.color">
+          {{ category.name }}
+          <span class="todo-count">({{ getTodoCountForCategory(category.id!) }})</span>
+        </span>
+        <div class="category-actions">
+          <button mat-icon-button (click)="openCategoryDialog(category)" class="edit-category-btn">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteCategory(category.id!)" class="delete-category-btn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Todo List Section -->
   <div class="todos-section">
-    <h2 class="section-title" *ngIf="todos.length > 0">My Todos</h2>
+    <h2 class="section-title" *ngIf="todos.length > 0">
+      {{ selectedCategoryId === null ? 'All Todos' : 
+         selectedCategoryId === 0 ? 'Uncategorized Todos' : 
+         getCategoryName(selectedCategoryId) + ' Todos' }}
+    </h2>
 
     <div class="todo-cards-container">
       <app-todo-item *ngFor="let todo of todos" [todo]="todo" (update)="updateTodo($event)" (delete)="deleteTodo($event)"></app-todo-item>

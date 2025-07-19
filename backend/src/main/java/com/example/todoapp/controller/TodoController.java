@@ -6,14 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.example.todoapp.model.Todo;
 import com.example.todoapp.service.TodoService;
@@ -38,11 +39,16 @@ public class TodoController {
      * Retrieves all todos for the currently authenticated user.
      * This endpoint fetches todos specific to the user making the request,
      * ensuring data isolation between different users.
+     * Optionally filters by category if categoryId parameter is provided.
      *
+     * @param categoryId optional category ID to filter todos by
      * @return List of Todo objects belonging to the authenticated user
      */
     @GetMapping
-    public List<Todo> getTodos() {
+    public List<Todo> getTodos(@RequestParam(required = false) Long categoryId) {
+        if (categoryId != null) {
+            return todoService.getTodosByCategory(categoryId);
+        }
         return todoService.getTodosForUser();
     }
 

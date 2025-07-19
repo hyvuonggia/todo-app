@@ -25,8 +25,7 @@
 
     <div class="description-section" *ngIf="todo.description">
       <h3 class="section-title">Description</h3>
-      <div class="description-content" [class.completed]="todo.completed">
-        {{ todo.description }}
+      <div class="description-content" [class.completed]="todo.completed" [innerHTML]="todo.description">
       </div>
     </div>
 

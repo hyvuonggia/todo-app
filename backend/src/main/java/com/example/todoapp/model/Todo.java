@@ -63,6 +63,15 @@ public class Todo {
     private User user;
 
     /**
+     * The category this todo item belongs to.
+     * Many-to-one relationship with Category entity.
+     * Optional field - todos can exist without a category.
+     */
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    /**
      * The date and time when this todo item was created.
      * Automatically set when the entity is first persisted.
      */

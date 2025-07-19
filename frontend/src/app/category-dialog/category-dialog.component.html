@@ -1,0 +1,52 @@
+<div class="dialog-content">
+  <h2 mat-dialog-title>
+    <mat-icon>{{ isEdit ? 'edit' : 'add' }}</mat-icon>
+    {{ isEdit ? 'Edit Category' : 'Create Category' }}
+  </h2>
+
+  <div mat-dialog-content>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Category Name</mat-label>
+      <input matInput
+             [(ngModel)]="name"
+             placeholder="Enter category name"
+             required
+             autofocus>
+    </mat-form-field>
+
+    <div class="color-selection">
+      <label class="color-label">Color</label>
+      <div class="color-grid">
+        <div 
+          *ngFor="let colorOption of predefinedColors" 
+          class="color-option"
+          [class.selected]="color === colorOption"
+          [style.background-color]="colorOption"
+          (click)="selectColor(colorOption)">
+        </div>
+      </div>
+    </div>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Description (Optional)</mat-label>
+      <textarea matInput
+                [(ngModel)]="description"
+                placeholder="Add a description for this category"
+                rows="3">
+      </textarea>
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">
+      Cancel
+    </button>
+    <button mat-raised-button
+            color="primary"
+            (click)="onSave()"
+            [disabled]="!name.trim()">
+      <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+      {{ isEdit ? 'Save Changes' : 'Create Category' }}
+    </button>
+  </div>
+</div>

@@ -7,8 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.example.todoapp.model.Category;
 import com.example.todoapp.model.Todo;
 import com.example.todoapp.model.User;
+import com.example.todoapp.repository.CategoryRepository;
 import com.example.todoapp.repository.TodoRepository;
 import com.example.todoapp.repository.UserRepository;
 
@@ -29,6 +31,9 @@ public class TodoService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     /**
      * Retrieves all todo items for the currently authenticated user.
      * 
@@ -41,6 +46,22 @@ public class TodoService {
     }
 
     /**
+     * Retrieves todo items filtered by category for the currently authenticated user.
+     * 
+     * @param categoryId the ID of the category to filter by, or null for uncategorized todos
+     * @return a list of todo items belonging to the current user and category
+     * @throws RuntimeException if the current user is not found
+     */
+    public List<Todo> getTodosByCategory(Long categoryId) {
+        User user = getCurrentUser();
+        if (categoryId == null) {
+            return todoRepository.findByUserIdAndCategoryIsNull(user.getId());
+        } else {
+            return todoRepository.findByUserIdAndCategoryId(user.getId(), categoryId);
+        }
+    }
+
+    /**
      * Creates a new todo item for the currently authenticated user.
      * 
      * @param todo the todo item to create
@@ -50,6 +71,17 @@ public class TodoService {
     public Todo createTodo(Todo todo) {
         User user = getCurrentUser();
         todo.setUser(user);
+        
+        // Handle category assignment
+        if (todo.getCategory() != null && todo.getCategory().getId() != null) {
+            Category category = categoryRepository.findById(todo.getCategory().getId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+            if (!category.getUser().getId().equals(user.getId())) {
+                throw new RuntimeException("You are not authorized to use this category");
+            }
+            todo.setCategory(category);
+        }
+        
         Todo savedTodo = todoRepository.save(todo);
         System.out.println("Saved Todo: " + savedTodo); // Add this line
         return savedTodo;
@@ -74,6 +106,19 @@ public class TodoService {
         todo.setTitle(todoDetails.getTitle());
         todo.setDescription(todoDetails.getDescription());
         todo.setCompleted(todoDetails.isCompleted());
+        
+        // Handle category assignment
+        if (todoDetails.getCategory() != null) {
+            Category category = categoryRepository.findById(todoDetails.getCategory().getId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+            if (!category.getUser().getId().equals(user.getId())) {
+                throw new RuntimeException("You are not authorized to use this category");
+            }
+            todo.setCategory(category);
+        } else {
+            todo.setCategory(null);
+        }
+        
         return todoRepository.save(todo);
     }
 

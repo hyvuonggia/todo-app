@@ -11,8 +11,20 @@ export class TodoService {
 
   constructor(private http: HttpClient) { }
 
-  getTodos(): Observable<Todo[]> {
-    return this.http.get<Todo[]>(this.apiUrl);
+  getTodos(categoryId?: number): Observable<Todo[]> {
+    let url = this.apiUrl;
+    if (categoryId !== undefined) {
+      url += `?categoryId=${categoryId}`;
+    }
+    return this.http.get<Todo[]>(url);
+  }
+
+  getTodosByCategory(categoryId: number | null): Observable<Todo[]> {
+    if (categoryId === null) {
+      return this.http.get<Todo[]>(this.apiUrl);
+    } else {
+      return this.http.get<Todo[]>(`${this.apiUrl}?categoryId=${categoryId}`);
+    }
   }
 
   getTodoById(id: number): Observable<Todo> {

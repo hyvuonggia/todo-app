@@ -15,6 +15,19 @@
              autofocus>
     </mat-form-field>
 
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Category (Optional)</mat-label>
+      <mat-select [(ngModel)]="selectedCategoryId">
+        <mat-option [value]="null">No Category</mat-option>
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          <span class="category-option">
+            <span class="category-color" [style.background-color]="category.color"></span>
+            {{ category.name }}
+          </span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <div class="description-field todo-description-editor">
       <label class="mat-form-field-label">Description (Optional)</label>
       <quill-editor [(ngModel)]="description"
